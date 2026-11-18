@@ -9,8 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        kemi: {
+          green: '#174D32',
+          'green-light': '#367A43',
+          beige: '#F3E8CE',
+          gold: '#C9A44C',
+          white: '#FFFFFF',
+        },
+      },
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
       },
     },
   },

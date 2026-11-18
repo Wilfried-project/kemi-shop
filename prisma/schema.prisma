@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  order       Int       @default(0)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  slug        String      @unique
+  description String?
+  price       Int
+  promoPrice  Int?
+  image       String?
+  images      String?
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  stock       Int         @default(100)
+  active      Boolean     @default(true)
+  featured    Boolean     @default(false)
+  minOrder    Int         @default(1)
+  unit        String      @default("piece")
+  tags        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+  promotions  ProductPromotion[]
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+  customerName    String
+  customerPhone   String
+  commune         String
+  quartier        String
+  address         String
+  instructions    String?
+  subtotal        Int
+  deliveryFee     Int
+  total           Int
+  paymentMethod   String
+  status          String      @default("en_attente")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Int
+  total     Int
+}
+
+model Promotion {
+  id          String    @id @default(uuid())
+  name        String
+  type        String
+  value       Int
+  startDate   DateTime
+  endDate     DateTime
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    ProductPromotion[]
+}
+
+model ProductPromotion {
+  id          String    @id @default(uuid())
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
+
+  @@unique([productId, promotionId])
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Settings {
+  id            String @id @default("main")
+  shopName      String @default("Les Fruits et Légumes de KEMI")
+  phone         String @default("07 57 56 88 28")
+  whatsapp      String @default("2250757568828")
+  address       String @default("Abidjan, Côte d'Ivoire")
+  deliveryFee   Int    @default(1000)
+  logo          String?
+  slogan        String @default("La fraîcheur made in KEMI")
+  currency      String @default("FCFA")
+  paymentMethods String @default("livraison,wave,orange_money,mtn_money,moov_money")
+}
