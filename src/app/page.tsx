@@ -5,16 +5,21 @@ import ProductCard from '@/components/ProductCard';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const categories = await prisma.category.findMany({
-    where: { active: true },
-    orderBy: { order: 'asc' },
-  });
-
-  const featuredProducts = await prisma.product.findMany({
-    where: { active: true, featured: true },
-    include: { category: true },
-    take: 8,
-  });
+  let categories: any[] = [];
+  let featuredProducts: any[] = [];
+  try {
+    categories = await prisma.category.findMany({
+      where: { active: true },
+      orderBy: { order: 'asc' },
+    });
+    featuredProducts = await prisma.product.findMany({
+      where: { active: true, featured: true },
+      include: { category: true },
+      take: 8,
+    });
+  } catch {
+    // DB not ready yet
+  }
 
   return (
     <div>
