@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import { slugify } from '@/lib/utils';
+export const dynamic = 'force-dynamic';
 
 function checkAuth() {
   const token = cookies().get('admin_token')?.value;

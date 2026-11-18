@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   const token = cookies().get('admin_token')?.value;
