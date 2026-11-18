@@ -35,6 +35,7 @@ const emptyProduct = {
 export default function AdminProduitsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editing, setEditing] = useState<any>(null);
   const [showForm, setShowForm] = useState(false);
 
