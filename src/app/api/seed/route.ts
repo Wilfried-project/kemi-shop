@@ -69,7 +69,7 @@ export async function GET() {
     const catEvenements = await prisma.category.create({ data: { name: 'Événements & Prestations', slug: 'evenements', description: 'Brochettes, plateaux, buffets de fruits', order: 6 } });
     const catChocolat = await prisma.category.create({ data: { name: 'Fraises au Chocolat', slug: 'fraises-au-chocolat', description: 'Fraises enrobées de chocolat', order: 7 } });
 
-    const products = [
+    const products: { name: string; slug: string; description: string; price: number; categoryId: string; featured?: boolean; tags: string; minOrder?: number; unit?: string }[] = [
       { name: 'Persil Detox', slug: 'persil-detox', description: 'Jus vert detox à base de persil, 100% pur jus.', price: 3000, categoryId: catJus.id, featured: true, tags: 'detox,vert,persil' },
       { name: 'Red Juice', slug: 'red-juice', description: 'Jus rouge à base de betterave, 100% pur jus.', price: 3000, categoryId: catJus.id, featured: true, tags: 'betterave,rouge,antioxydant' },
       { name: 'Brûle Graisse', slug: 'brule-graisse', description: 'Jus brûle-graisse 100% pur jus.', price: 3000, categoryId: catJus.id, featured: true, tags: 'minceur,energie,detox' },
@@ -101,15 +101,16 @@ export async function GET() {
       await prisma.product.create({
         data: {
           name: p.name, slug: p.slug, description: p.description, price: p.price,
-          categoryId: p.categoryId, featured: (p as any).featured ?? false,
-          minOrder: (p as any).minOrder ?? 1, unit: (p as any).unit ?? 'piece',
-          tags: (p as any).tags ?? null, active: true, stock: 100,
+          categoryId: p.categoryId, featured: 'featured' in p ? Boolean(p.featured) : false,
+          minOrder: 'minOrder' in p ? Number(p.minOrder) : 1, unit: 'unit' in p ? String(p.unit) : 'piece',
+          tags: p.tags ?? null, active: true, stock: 100,
         },
       });
     }
 
     return NextResponse.json({ message: 'Base de donnees initialisee avec succes!', seeded: true, products: products.length });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -5,7 +5,9 @@ import ProductCard from '@/components/ProductCard';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let categories: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let featuredProducts: any[] = [];
   try {
     categories = await prisma.category.findMany({
